@@ -37,6 +37,12 @@ public struct FCMApnsApsObject: Codable, Equatable {
     /// If the value is 1, the system passes the notification to your notification service app extension before delivery.
     /// Use your extension to modify the notification’s content.
     public var mutableContent: Int?
+    
+    /// The notification service app extension flag.
+    /// This value corresponds to the apnsCollapseId property in the UNNotificationContent object.
+    /// This removes all notifications with same id
+    /// So, all you need to do is generate a unique ID for each alert you send, then, if you want to replace it, send another notification using that same ID, which will take its place
+    public var apnsCollapseId: String?
 
     enum CodingKeys: String, CodingKey {
         case alert
@@ -46,6 +52,7 @@ public struct FCMApnsApsObject: Codable, Equatable {
         case category
         case threadId="thread-id"
         case mutableContent="mutable-content"
+        case apnsCollapseId="apns-collapse-id"
     }
     
     struct Config {
@@ -56,6 +63,7 @@ public struct FCMApnsApsObject: Codable, Equatable {
         var category: String?
         var threadId: String?
         var mutableContent: Bool?
+        var apnsCollapseId: String?
     }
     
     init(config: Config?) {
@@ -73,6 +81,7 @@ public struct FCMApnsApsObject: Codable, Equatable {
         if let value = config?.mutableContent, value {
             mutableContent = 1
         }
+        apnsCollapseId = config?.apnsCollapseId
     }
     
     public static var `default`: FCMApnsApsObject {
@@ -85,14 +94,16 @@ public struct FCMApnsApsObject: Codable, Equatable {
                 contentAvailable: Bool? = nil,
                 category: String? = nil,
                 threadId: String? = nil,
-                mutableContent: Bool? = nil) {
+                mutableContent: Bool? = nil,
+                apnsCollapseId: String? = nil) {
         self.init(config: Config(alert: FCMApnsAlertOrString.fromRaw(alertString),
                                  badge: badge,
                                  sound: sound,
                                  contentAvailable: contentAvailable,
                                  category: category,
                                  threadId: threadId,
-                                 mutableContent: mutableContent))
+                                 mutableContent: mutableContent,
+                                 apnsCollapseId: apnsCollapseId))
     }
     
     public init(alert: FCMApnsAlert? = nil,
@@ -101,14 +112,16 @@ public struct FCMApnsApsObject: Codable, Equatable {
                 contentAvailable: Bool? = nil,
                 category: String? = nil,
                 threadId: String? = nil,
-                mutableContent: Bool? = nil) {
+                mutableContent: Bool? = nil,
+                apnsCollapseId: String? = nil) {
         self.init(config: Config(alert: FCMApnsAlertOrString.fromRaw(alert),
                                  badge: badge,
                                  sound: sound,
                                  contentAvailable: contentAvailable,
                                  category: category,
                                  threadId: threadId,
-                                 mutableContent: mutableContent))
+                                 mutableContent: mutableContent,
+                                 apnsCollapseId: apnsCollapseId))
     }
 }
 
